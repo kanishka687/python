@@ -1,0 +1,13 @@
+class Solution:
+    def singleNumber(self, nums: List[int]) -> int:
+        ones = 0
+        twos = 0
+        
+        for num in nums:
+            # 'ones' stores bits that have appeared 1 time (mod 3)
+            # 'twos' stores bits that have appeared 2 times (mod 3)
+            
+            ones = (ones ^ num) & ~twos
+            twos = (twos ^ num) & ~ones
+            
+        return ones
