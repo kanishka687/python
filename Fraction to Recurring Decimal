@@ -1,0 +1,40 @@
+class Solution:
+    def fractionToDecimal(self, numerator: int, denominator: int) -> str:
+        if numerator == 0:
+            return "0"
+        
+        res = []
+        # Handle signs
+        if (numerator < 0) ^ (denominator < 0):
+            res.append("-")
+            
+        # Use absolute values to simplify math
+        num, den = abs(numerator), abs(denominator)
+        
+        # 1. Integer Part
+        res.append(str(num // den))
+        num %= den
+        
+        if num == 0:
+            return "".join(res)
+            
+        # 2. Decimal Part
+        res.append(".")
+        # Dictionary to store {remainder: index_in_res}
+        lookup = {}
+        
+        while num != 0:
+            # If remainder repeats, we found the recurring cycle
+            if num in lookup:
+                res.insert(lookup[num], "(")
+                res.append(")")
+                break
+            
+            # Store the current index before adding the new digit
+            lookup[num] = len(res)
+            
+            num *= 10
+            res.append(str(num // den))
+            num %= den
+            
+        return "".join(res)
