@@ -1,0 +1,15 @@
+from typing import List
+
+class Solution:
+    def getMinDistance(self, nums: List[int], target: int, start: int) -> int:
+        # Initialize with a value larger than any possible distance
+        ans = float('inf')
+        
+        for i, num in enumerate(nums):
+            if num == target:
+                # Calculate absolute distance and keep the minimum
+                distance = abs(i - start)
+                if distance < ans:
+                    ans = distance
+                    
+        return ans
