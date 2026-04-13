@@ -1,0 +1,11 @@
+def split_and_join(line):
+    # Split the string by " " to get a list of words
+    words = line.split(" ")
+    # Join the list back together with "-" as the connector
+    result = "-".join(words)
+    return result
+
+if __name__ == '__main__':
+    line = input()
+    result = split_and_join(line)
+    print(result)
