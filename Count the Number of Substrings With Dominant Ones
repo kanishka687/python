@@ -1,0 +1,53 @@
+from typing import List
+
+class Solution:
+    def numberOfSubstrings(self, s: str) -> int:
+        n = len(s)
+        # Store indices of all zeros to jump between them
+        zero_indices = [i for i, char in enumerate(s) if char == '0']
+        num_zeros = len(zero_indices)
+        
+        # Prefix sum to get the count of 1s in any range [i, j] in O(1)
+        pref = [0] * (n + 1)
+        for i in range(n):
+            pref[i + 1] = pref[i] + (1 if s[i] == '1' else 0)
+            
+        ans = 0
+        
+        for i in range(n):
+            # Find the first zero that appears at or after index i
+            import bisect
+            idx = bisect.bisect_left(zero_indices, i)
+            
+            # Case 1: Substrings starting at i and ending before the first zero
+            # These contain only 1s, so they are always dominant.
+            if idx < num_zeros:
+                first_zero = zero_indices[idx]
+                ans += (first_zero - i)
+            else:
+                # No more zeros left, all remaining substrings starting at i are all 1s
+                ans += (n - i)
+                continue
+            
+            # Case 2: Substrings containing at least one zero
+            # We only iterate up to sqrt(n) zeros because Zeros^2 <= n
+            for k in range(idx, num_zeros):
+                cnt0 = k - idx + 1
+                if cnt0 * cnt0 > n:
+                    break
+                
+                left = zero_indices[k]
+                right = zero_indices[k + 1] if k + 1 < num_zeros else n
+                
+                # Ones needed: cnt1 >= cnt0 * cnt0
+                cnt1_already = pref[left + 1] - pref[i]
+                needed = cnt0 * cnt0 - cnt1_already
+                
+                # The substring must end at least at 'left + max(0, needed)'
+                # to satisfy the dominant ones condition.
+                start_j = max(left, left + needed)
+                
+                if start_j < right:
+                    ans += (right - start_j)
+                    
+        return ans
