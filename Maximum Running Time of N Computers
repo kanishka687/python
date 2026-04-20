@@ -1,0 +1,25 @@
+class Solution:
+    def maxRunTime(self, n: int, batteries: list[int]) -> int:
+        # Lower bound: 1 minute
+        # Upper bound: Total energy divided by number of computers
+        low = 1
+        high = sum(batteries) // n
+        
+        ans = 0
+        while low <= high:
+            mid = (low + high) // 2
+            
+            # Calculate total useful energy for 'mid' minutes
+            total_useful_energy = 0
+            for b in batteries:
+                # A battery cannot contribute more than 'mid' time 
+                # to the total simultaneous runtime.
+                total_useful_energy += min(b, mid)
+            
+            if total_useful_energy >= n * mid:
+                ans = mid
+                low = mid + 1
+            else:
+                high = mid - 1
+                
+        return ans
