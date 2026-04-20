@@ -1,0 +1,33 @@
+class Solution:
+    def numberOfPaths(self, grid: list[list[int]], k: int) -> int:
+        m, n = len(grid), len(grid[0])
+        MOD = 10**9 + 7
+        
+        # dp[c][rem] stores the number of paths to the current row, column c, with remainder rem
+        dp = [[0] * k for _ in range(n)]
+        
+        # Initialize start position (0, 0)
+        dp[0][grid[0][0] % k] = 1
+        
+        # Fill the first row (only moves from the left)
+        for j in range(1, n):
+            val_rem = grid[0][j] % k
+            for r in range(k):
+                dp[j][(r + val_rem) % k] = dp[j-1][r]
+        
+        # Fill remaining rows
+        for i in range(1, m):
+            new_dp = [[0] * k for _ in range(n)]
+            for j in range(n):
+                val_rem = grid[i][j] % k
+                # From top (previous row, same column)
+                for r in range(k):
+                    new_dp[j][(r + val_rem) % k] = (new_dp[j][(r + val_rem) % k] + dp[j][r]) % MOD
+                
+                # From left (same row, previous column)
+                if j > 0:
+                    for r in range(k):
+                        new_dp[j][(r + val_rem) % k] = (new_dp[j][(r + val_rem) % k] + new_dp[j-1][r]) % MOD
+            dp = new_dp
+            
+        return dp[n-1][0]
