@@ -1,0 +1,35 @@
+from collections import Counter
+
+class Solution:
+    def countSpecialTriplets(self, nums: list[int]) -> int:
+        n = len(nums)
+        MOD = 10**9 + 7
+        
+        # Total counts of every number in the array
+        right_counts = Counter(nums)
+        # Counts of every number seen so far as we iterate
+        left_counts = Counter()
+        
+        ans = 0
+        
+        for num in nums:
+            # The current number is now a potential 'j' (middle element)
+            # It is no longer to the 'right' of the current index
+            right_counts[num] -= 1
+            
+            target = num * 2
+            
+            # Number of valid 'i' indices (where nums[i] == 2 * nums[j])
+            count_i = left_counts[target]
+            
+            # Number of valid 'k' indices (where nums[k] == 2 * nums[j])
+            count_k = right_counts[target]
+            
+            # Total triplets for this specific 'j'
+            if count_i > 0 and count_k > 0:
+                ans = (ans + count_i * count_k) % MOD
+            
+            # Update left_counts for the next iteration
+            left_counts[num] += 1
+            
+        return ans
