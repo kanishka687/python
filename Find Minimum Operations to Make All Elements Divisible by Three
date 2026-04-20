@@ -1,0 +1,9 @@
+class Solution:
+    def minimumOperations(self, nums: list[int]) -> int:
+        operations = 0
+        for num in nums:
+            # If the remainder is not 0, it takes exactly 1 op 
+            # (either +1 or -1) to make it divisible by 3.
+            if num % 3 != 0:
+                operations += 1
+        return operations
