@@ -1,0 +1,24 @@
+class Solution:
+    def maxSubarraySum(self, nums: list[int], k: int) -> int:
+        n = len(nums)
+        # min_prefix[r] stores the minimum prefix sum seen so far 
+        # at an index i where i % k == r
+        min_prefix = [float('inf')] * k
+        min_prefix[0] = 0
+        
+        current_prefix_sum = 0
+        max_sum = -float('inf')
+        
+        for i in range(1, n + 1):
+            current_prefix_sum += nums[i-1]
+            remainder = i % k
+            
+            # If we have seen a prefix sum with the same index remainder before,
+            # the subarray sum between that index and current i has length divisible by k.
+            if min_prefix[remainder] != float('inf'):
+                max_sum = max(max_sum, current_prefix_sum - min_prefix[remainder])
+            
+            # Update the minimum prefix sum for this remainder
+            min_prefix[remainder] = min(min_prefix[remainder], current_prefix_sum)
+            
+        return max_sum
