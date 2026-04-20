@@ -1,0 +1,19 @@
+import math
+
+class Solution:
+    def countTriples(self, n: int) -> int:
+        count = 0
+        # Iterate through all possible values of a and b
+        for a in range(1, n + 1):
+            for b in range(1, n + 1):
+                # Calculate a^2 + b^2
+                c2 = a**2 + b**2
+                
+                # Find the integer square root
+                c = int(math.sqrt(c2))
+                
+                # Check if c is within bounds and it's a perfect square
+                if c <= n and c*c == c2:
+                    count += 1
+                    
+        return count
