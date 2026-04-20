@@ -1,0 +1,28 @@
+from collections import deque
+
+class MyStack:
+    def __init__(self):
+        # We use a deque but only use queue operations:
+        # append() -> push to back
+        # popleft() -> pop from front
+        self.queue = deque()
+
+    def push(self, x: int) -> None:
+        # Add the element to the back
+        self.queue.append(x)
+        
+        # Rotate the queue so the new element is at the front
+        # We move all elements that were already there to the back
+        for _ in range(len(self.queue) - 1):
+            self.queue.append(self.queue.popleft())
+
+    def pop(self) -> int:
+        # The top element is already at the front
+        return self.queue.popleft()
+
+    def top(self) -> int:
+        # Peek at the front
+        return self.queue[0]
+
+    def empty(self) -> bool:
+        return not self.queue
