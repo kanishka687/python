@@ -1,0 +1,23 @@
+class Solution:
+    def summaryRanges(self, nums: list[int]) -> list[str]:
+        ranges = []
+        i = 0
+        
+        while i < len(nums):
+            start = nums[i]
+            
+            # Move i forward as long as numbers are consecutive
+            while i + 1 < len(nums) and nums[i + 1] == nums[i] + 1:
+                i += 1
+            
+            end = nums[i]
+            
+            # Format the output based on whether start and end are different
+            if start == end:
+                ranges.append(str(start))
+            else:
+                ranges.append(f"{start}->{end}")
+                
+            i += 1
+            
+        return ranges
