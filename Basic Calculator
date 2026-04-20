@@ -1,0 +1,44 @@
+class Solution:
+    def calculate(self, s: str) -> int:
+        stack = []
+        total_sum = 0
+        current_number = 0
+        sign = 1  # 1 for positive, -1 for negative
+        
+        i = 0
+        while i < len(s):
+            char = s[i]
+            
+            if char.isdigit():
+                # Build multi-digit numbers
+                current_number = 0
+                while i < len(s) and s[i].isdigit():
+                    current_number = current_number * 10 + int(s[i])
+                    i += 1
+                # Subtract 1 from i because the outer loop will increment it
+                i -= 1
+                total_sum += sign * current_number
+                
+            elif char == '+':
+                sign = 1
+                
+            elif char == '-':
+                sign = -1
+                
+            elif char == '(':
+                # Push the current result and sign to the stack
+                stack.append(total_sum)
+                stack.append(sign)
+                # Reset for the expression inside parentheses
+                total_sum = 0
+                sign = 1
+                
+            elif char == ')':
+                # pop sign first, then the previous sum
+                prev_sign = stack.pop()
+                prev_sum = stack.pop()
+                total_sum = prev_sum + (prev_sign * total_sum)
+                
+            i += 1
+            
+        return total_sum
