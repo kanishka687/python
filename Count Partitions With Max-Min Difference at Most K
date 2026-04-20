@@ -1,0 +1,40 @@
+class Solution:
+    def countPartitions(self, nums: list[int], k: int) -> int:
+        n = len(nums)
+        MOD = 10**9 + 7
+        
+        dp = [0] * (n + 1)
+        dp[0] = 1
+        
+        # Deques to store indices for min and max tracking
+        min_dq = collections.deque()
+        max_dq = collections.deque()
+        
+        left = 0
+        current_dp_sum = 0
+        
+        for i in range(n):
+            # Update deques with current element nums[i]
+            while min_dq and nums[min_dq[-1]] >= nums[i]:
+                min_dq.pop()
+            while max_dq and nums[max_dq[-1]] <= nums[i]:
+                max_dq.pop()
+            min_dq.append(i)
+            max_dq.append(i)
+            
+            # Maintain the window [left, i] such that max - min <= k
+            while nums[max_dq[0]] - nums[min_dq[0]] > k:
+                # As we move left pointer, subtract dp[left] from running sum
+                current_dp_sum = (current_dp_sum - dp[left]) % MOD
+                left += 1
+                if min_dq[0] < left:
+                    min_dq.popleft()
+                if max_dq[0] < left:
+                    max_dq.popleft()
+            
+            # dp[i+1] is the sum of ways to partition prefixes up to the current left
+            # We add dp[i] to the running sum before calculating dp[i+1]
+            current_dp_sum = (current_dp_sum + dp[i]) % MOD
+            dp[i+1] = current_dp_sum
+            
+        return dp[n]
