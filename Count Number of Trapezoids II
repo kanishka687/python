@@ -1,0 +1,68 @@
+from collections import defaultdict
+from math import gcd
+
+class Solution:
+    def countTrapezoids(self, points: list[list[int]]) -> int:
+        n = len(points)
+        # map slope -> list of point pairs (i, j)
+        slopes = defaultdict(list)
+        
+        # Helper to get normalized slope as a irreducible fraction
+        def get_slope(p1, p2):
+            dx = p1[0] - p2[0]
+            dy = p1[1] - p2[1]
+            if dx == 0: return (1, 0) # Vertical
+            if dy == 0: return (0, 1) # Horizontal
+            common = gcd(dx, dy)
+            dx //= common
+            dy //= common
+            # Ensure consistent sign
+            if dx < 0:
+                dx, dy = -dx, -dy
+            return (dx, dy)
+
+        # 1. Group all possible segments by slope
+        for i in range(n):
+            for j in range(i + 1, n):
+                s = get_slope(points[i], points[j])
+                slopes[s].append((i, j))
+        
+        ans = 0
+        
+        # 2. For each slope, check pairs of segments
+        for s in slopes:
+            segments = slopes[s]
+            m = len(segments)
+            for i in range(m):
+                for j in range(i + 1, m):
+                    p1, p2 = segments[i]
+                    p3, p4 = segments[j]
+                    
+                    # Ensure all 4 points are distinct
+                    if len({p1, p2, p3, p4}) == 4:
+                        # Check if they form a convex quadrilateral
+                        # For a trapezoid with parallel bases, it is convex 
+                        # if the segments don't intersect.
+                        if self.isConvex(points[p1], points[p2], points[p3], points[p4]):
+                            ans += 1
+                            
+        return ans
+
+    def isConvex(self, a, b, c, d):
+        # A trapezoid with parallel sides AB and CD is convex if 
+        # segment AB and CD don't "cross".
+        # This can be checked using cross products.
+        def cross_product(o, a, b):
+            return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+        
+        # If segments (a,b) and (c,d) are parallel, they form a convex quad 
+        # if points c and d lie on the same side of line ab, OR 
+        # we check the orientation of the resulting polygon.
+        cp1 = cross_product(a, b, c)
+        cp2 = cross_product(a, b, d)
+        cp3 = cross_product(c, d, a)
+        cp4 = cross_product(c, d, b)
+        
+        # If they are on the same side, it's convex.
+        # This also avoids "bow-tie" quadrilaterals.
+        return (cp1 * cp2 > 0) and (cp3 * cp4 > 0)
