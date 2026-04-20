@@ -1,0 +1,7 @@
+class Solution:
+    def countOdds(self, low: int, high: int) -> int:
+        # Function to count odds from 0 to n
+        def count_to_n(n):
+            return (n + 1) // 2
+        
+        return count_to_n(high) - count_to_n(low - 1)
