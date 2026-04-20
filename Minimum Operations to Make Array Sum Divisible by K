@@ -1,0 +1,8 @@
+class Solution:
+    def minOperations(self, nums: list[int], k: int) -> int:
+        # Step 1: Calculate the total sum of the array
+        total_sum = sum(nums)
+        
+        # Step 2: Find the remainder when divided by k
+        # This remainder is the number of -1 operations needed
+        return total_sum % k
