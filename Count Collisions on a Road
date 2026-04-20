@@ -1,0 +1,10 @@
+class Solution:
+    def countCollisions(self, directions: str) -> int:
+        # Step 1: Strip the cars moving away from the road
+        # 'L' at the start and 'R' at the end will never collide
+        middle_section = directions.lstrip('L').rstrip('R')
+        
+        # Step 2: In the remaining section, every 'L' and 'R' 
+        # will eventually collide and stop. 
+        # Total collisions = (Total length of middle) - (Already stationary cars)
+        return len(middle_section) - middle_section.count('S')
