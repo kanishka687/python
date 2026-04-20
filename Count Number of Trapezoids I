@@ -1,0 +1,29 @@
+from collections import Counter
+
+class Solution:
+    def countTrapezoids(self, points: list[list[int]]) -> int:
+        MOD = 10**9 + 7
+        
+        # Count points at each y-coordinate
+        y_counts = Counter(p[1] for p in points)
+        
+        # Calculate how many pairs of points exist at each height
+        # a height with n points can form nC2 pairs
+        pairs_per_height = []
+        for y in y_counts:
+            n = y_counts[y]
+            if n >= 2:
+                pairs_per_height.append((n * (n - 1)) // 2)
+        
+        total_trapezoids = 0
+        running_sum = 0
+        
+        # We need to sum (pairs_i * pairs_j) for all i < j
+        # This is equivalent to: 
+        # (Total Sum of pairs)^2 - (Sum of squares of pairs) / 2
+        # Or more simply, use a running sum to keep it O(H)
+        for count in pairs_per_height:
+            total_trapezoids = (total_trapezoids + count * running_sum) % MOD
+            running_sum = (running_sum + count) % MOD
+            
+        return total_trapezoids
