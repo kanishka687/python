@@ -1,0 +1,17 @@
+import bisect
+
+class Solution:
+    def lengthOfLIS(self, nums: list[int]) -> int:
+        tails = []
+        for x in nums:
+            # Find the index where x would fit in the sorted tails list
+            idx = bisect.bisect_left(tails, x)
+            
+            if idx == len(tails):
+                # x is larger than any tail, so it extends the LIS
+                tails.append(x)
+            else:
+                # Replace the existing tail with x to keep it as small as possible
+                tails[idx] = x
+                
+        return len(tails)
