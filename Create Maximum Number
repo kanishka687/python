@@ -1,0 +1,30 @@
+class Solution:
+    def maxNumber(self, nums1: list[int], nums2: list[int], k: int) -> list[int]:
+        m, n = len(nums1), len(nums2)
+        res = []
+
+        # Find the max subsequence of a given length using a monotonic stack
+        def get_max_subsequence(nums, length):
+            stack = []
+            to_pop = len(nums) - length
+            for x in nums:
+                while stack and to_pop > 0 and stack[-1] < x:
+                    stack.pop()
+                    to_pop -= 1
+                stack.append(x)
+            return stack[:length]
+
+        # Merge two subsequences to form the largest number
+        def merge(a, b):
+            # Comparison a > b in Python lists compares lexicographically
+            return [max(a, b).pop(0) for _ in range(len(a) + len(b))]
+
+        # Try all possible distributions of k between nums1 and nums2
+        for i in range(max(0, k - n), min(k, m) + 1):
+            sub1 = get_max_subsequence(nums1, i)
+            sub2 = get_max_subsequence(nums2, k - i)
+            current_max = merge(sub1, sub2)
+            if current_max > res:
+                res = current_max
+                
+        return res
