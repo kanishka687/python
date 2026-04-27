@@ -1,0 +1,23 @@
+class Solution:
+    def oddEvenList(self, head: ListNode) -> ListNode:
+        if not head:
+            return None
+            
+        odd = head
+        even = head.next
+        even_head = even # Save the start of the even list
+        
+        # Traverse until there are no more even nodes or next odd nodes
+        while even and even.next:
+            # Connect current odd to the next odd
+            odd.next = even.next
+            odd = odd.next
+            
+            # Connect current even to the next even
+            even.next = odd.next
+            even = even.next
+            
+        # Attach the even list to the end of the odd list
+        odd.next = even_head
+        
+        return head
