@@ -1,0 +1,26 @@
+import collections
+
+class Solution:
+    def findItinerary(self, tickets: list[list[str]]) -> list[str]:
+        # Step 1: Build the graph with sorted destinations
+        adj = collections.defaultdict(list)
+        for src, dst in tickets:
+            adj[src].append(dst)
+        
+        # Sort in reverse to use pop() which is O(1)
+        for src in adj:
+            adj[src].sort(reverse=True)
+            
+        res = []
+
+        def dfs(airport):
+            # Step 2: Visit neighbors in lexical order
+            while adj[airport]:
+                next_dest = adj[airport].pop()
+                dfs(next_dest)
+            # Step 3: Add to result after all neighbors are visited
+            res.append(airport)
+
+        dfs("JFK")
+        # Step 4: Reverse to get the departure-to-arrival order
+        return res[::-1]
