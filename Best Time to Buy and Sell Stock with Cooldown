@@ -1,0 +1,26 @@
+class Solution:
+    def maxProfit(self, prices: list[int]) -> int:
+        if not prices:
+            return 0
+            
+        # Initial states for day 0
+        hold = -prices[0]  # Bought on day 0
+        sold = 0          # Impossible to sell on day 0, so 0
+        rest = 0          # Doing nothing on day 0
+        
+        for i in range(1, len(prices)):
+            prev_hold = hold
+            prev_sold = sold
+            prev_rest = rest
+            
+            # 1. To hold today: keep holding or buy after resting
+            hold = max(prev_hold, prev_rest - prices[i])
+            
+            # 2. To sell today: must have held stock yesterday
+            sold = prev_hold + prices[i]
+            
+            # 3. To rest today: was resting or just sold yesterday (cooldown)
+            rest = max(prev_rest, prev_sold)
+            
+        # The max profit is either after selling or while resting
+        return max(sold, rest)
