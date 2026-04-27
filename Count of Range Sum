@@ -1,0 +1,30 @@
+class Solution:
+    def countRangeSum(self, nums: list[int], lower: int, upper: int) -> int:
+        # 1. Build the prefix sum array
+        prefix_sums = [0]
+        for x in nums:
+            prefix_sums.append(prefix_sums[-1] + x)
+
+        def count_and_sort(l, r):
+            if r - l <= 1:
+                return 0
+            
+            mid = (l + r) // 2
+            count = count_and_sort(l, mid) + count_and_sort(mid, r)
+            
+            # 2. Count cross-half pairs using two pointers
+            # For each i in left half, find j1, j2 in right half such that:
+            # lower <= P[j] - P[i] <= upper
+            j1 = j2 = mid
+            for i in range(l, mid):
+                while j1 < r and prefix_sums[j1] - prefix_sums[i] < lower:
+                    j1 += 1
+                while j2 < r and prefix_sums[j2] - prefix_sums[i] <= upper:
+                    j2 += 1
+                count += (j2 - j1)
+            
+            # 3. Standard merge step to keep prefix_sums sorted
+            prefix_sums[l:r] = sorted(prefix_sums[l:r])
+            return count
+
+        return count_and_sort(0, len(prefix_sums))
