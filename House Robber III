@@ -1,0 +1,18 @@
+class Solution:
+    def rob(self, root: Optional[TreeNode]) -> int:
+        def dfs(node):
+            if not node:
+                return [0, 0] # [robbed, skipped]
+            
+            left = dfs(node.left)
+            right = dfs(node.right)
+            
+            # 1. If we rob this node, we must skip its children
+            rob_this = node.val + left[1] + right[1]
+            
+            # 2. If we skip this node, we take the max from each child
+            skip_this = max(left) + max(right)
+            
+            return [rob_this, skip_this]
+        
+        return max(dfs(root))
