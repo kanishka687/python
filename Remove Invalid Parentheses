@@ -1,0 +1,29 @@
+class Solution:
+    def removeInvalidParentheses(self, s: str) -> list[str]:
+        def is_valid(string):
+            count = 0
+            for char in string:
+                if char == '(':
+                    count += 1
+                elif char == ')':
+                    count -= 1
+                    if count < 0:
+                        return False
+            return count == 0
+
+        queue = {s}
+        while queue:
+            # Check all strings at the current "removal level"
+            valid_results = list(filter(is_valid, queue))
+            if valid_results:
+                return valid_results
+            
+            # Generate the next level by removing one bracket from each string
+            next_queue = set()
+            for string in queue:
+                for i in range(len(string)):
+                    if string[i] in "()":
+                        next_queue.add(string[:i] + string[i+1:])
+            queue = next_queue
+            
+        return [""]
