@@ -1,0 +1,40 @@
+class Solution:
+    def addOperators(self, num: str, target: int) -> list[str]:
+        res = []
+        
+        def backtrack(index, prev_operand, current_val, expression):
+            # Base Case: Reached the end of the string
+            if index == len(num):
+                if current_val == target:
+                    res.append(expression)
+                return
+
+            for i in range(index, len(num)):
+                # Extract substring and convert to integer
+                sub_str = num[index : i + 1]
+                
+                # Rule: No leading zeros for multi-digit numbers
+                if len(sub_str) > 1 and sub_str[0] == '0':
+                    break
+                
+                curr_num = int(sub_str)
+                
+                # If we are at the beginning, we just pick the first number
+                if index == 0:
+                    backtrack(i + 1, curr_num, curr_num, sub_str)
+                else:
+                    # Addition
+                    backtrack(i + 1, curr_num, current_val + curr_num, f"{expression}+{sub_str}")
+                    
+                    # Subtraction
+                    backtrack(i + 1, -curr_num, current_val - curr_num, f"{expression}-{sub_str}")
+                    
+                    # Multiplication (The "Undo" logic)
+                    # New total: current_val - prev + (prev * curr_num)
+                    # New prev: prev * curr_num
+                    backtrack(i + 1, prev_operand * curr_num, 
+                              (current_val - prev_operand) + (prev_operand * curr_num), 
+                              f"{expression}*{sub_str}")
+
+        backtrack(0, 0, 0, "")
+        return res
