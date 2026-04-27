@@ -1,0 +1,30 @@
+class NumArray:
+    def __init__(self, nums: list[int]):
+        self.n = len(nums)
+        self.nums = nums
+        self.bit = [0] * (self.n + 1)
+        # Build the BIT
+        for i, val in enumerate(nums):
+            self._update_bit(i, val)
+
+    def _update_bit(self, i: int, delta: int):
+        i += 1  # BIT is 1-indexed
+        while i <= self.n:
+            self.bit[i] += delta
+            i += i & (-i)  # Move to next responsible node
+
+    def update(self, index: int, val: int) -> None:
+        delta = val - self.nums[index]
+        self.nums[index] = val
+        self._update_bit(index, delta)
+
+    def _query(self, i: int) -> int:
+        i += 1
+        s = 0
+        while i > 0:
+            s += self.bit[i]
+            i -= i & (-i)  # Move to parent node
+        return s
+
+    def sumRange(self, left: int, right: int) -> int:
+        return self._query(right) - self._query(left - 1)
