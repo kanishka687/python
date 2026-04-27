@@ -1,0 +1,23 @@
+class Solution:
+    def removeDuplicateLetters(self, s: str) -> str:
+        # 1. Map the last occurrence of each character
+        last_occ = {char: i for i, char in enumerate(s)}
+        
+        stack = []
+        visited = set()
+        
+        for i, char in enumerate(s):
+            # 2. Skip if character is already in our result
+            if char in visited:
+                continue
+                
+            # 3. Monotonic property: pop larger chars if they appear later
+            while stack and char < stack[-1] and i < last_occ[stack[-1]]:
+                removed_char = stack.pop()
+                visited.remove(removed_char)
+            
+            # 4. Add current char
+            stack.append(char)
+            visited.add(char)
+            
+        return "".join(stack)
