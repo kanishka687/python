@@ -1,0 +1,19 @@
+class Solution:
+    def isValidSerialization(self, preorder: str) -> bool:
+        # Start with 1 slot for the root
+        slots = 1
+        
+        for node in preorder.split(','):
+            # Consume 1 slot for the current node
+            slots -= 1
+            
+            # If slots are negative, we have more nodes than capacity
+            if slots < 0:
+                return False
+            
+            # Non-null nodes create 2 new child slots
+            if node != '#':
+                slots += 2
+        
+        # A valid tree must use all slots exactly
+        return slots == 0
