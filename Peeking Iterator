@@ -1,0 +1,20 @@
+class PeekingIterator:
+    def __init__(self, iterator):
+        self.iterator = iterator
+        # Pre-fetch the first element
+        self._next = self.iterator.next() if self.iterator.hasNext() else None
+
+    def peek(self):
+        # Simply return the cached value
+        return self._next
+
+    def next(self):
+        # Store the value to return
+        res = self._next
+        # Update the cache for the next peek/next call
+        self._next = self.iterator.next() if self.iterator.hasNext() else None
+        return res
+
+    def hasNext(self):
+        # If _next is not None, there is still data
+        return self._next is not None
